@@ -1,0 +1,35 @@
+{
+  "properties": {
+    "connectionParameters": {
+      "token": {
+        "type": "oauthSetting",
+        "oAuthSettings": {
+          "identityProvider": "oauth2",
+          "clientId": "f03f75ad-44ad-414e-8e41-5ec07f09afa5",
+          "scopes": [],
+          "redirectMode": "Global",
+          "redirectUrl": "https://global.consent.azure-apim.net/redirect",
+          "properties": {
+            "IsFirstParty": "False",
+            "IsOnbehalfofLoginSupported": false
+          },
+          "customParameters": {
+            "authorizationUrl": {
+              "value": "https://identity.company-information.service.gov.uk/oauth2/authorise"
+            },
+            "tokenUrl": {
+              "value": "https://identity.company-information.service.gov.uk/oauth2/token"
+            },
+            "refreshUrl": {
+              "value": "https://identity.company-information.service.gov.uk/oauth2/token"
+            }
+          }
+        }
+      }
+    },
+    "iconBrandColor": "#da3b01",
+    "capabilities": [],
+    "publisher": "Marco Amoedo & Mario Trueba",
+    "stackOwner": "Companies House"
+  }
+}

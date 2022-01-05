@@ -1,0 +1,2305 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "Companies House",
+    "description": "Companies House public data API",
+    "contact": {
+      "name": "Marco Amoedo y Mario Trueba",
+      "email":"info@powerplatformyamigos.com"
+    }
+  },
+  "host": "api.company-information.service.gov.uk",
+  "basePath": "/",
+  "schemes": [
+    "https"
+  ],
+  "consumes": [],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/search": {
+      "get": {
+        "summary": "Search",
+        "description": "Search companies, officers and disqualified officers",
+        "operationId": "Search",
+        "parameters": [
+          { "$ref": "#/parameters/QueryString" },
+          { "$ref": "#/parameters/NumberOfItems"},
+          { "$ref": "#/parameters/StartIndex"}
+        ],
+        "responses": {
+          "200": {
+            "description": "Search All",
+            "schema": {
+              "$ref": "#/definitions/Search"
+            }
+          },
+          "401": {
+            "description": "Not Authorised"
+          }
+        }
+      }
+    },
+    "/search/companies/": {
+      "get": {
+        "summary": "Search Companies",
+        "description": "Search company information\r\n\r\n",
+        "operationId": "SearchCompanies",
+        "parameters": [
+          { "$ref": "#/parameters/QueryString" },
+          { "$ref": "#/parameters/NumberOfItems"},
+          { "$ref": "#/parameters/StartIndex"}
+        ],
+        "responses": {
+          "200": {
+            "description": "Company Search",
+            "schema": {
+              "$ref": "#/definitions/CompanySearch"
+            }
+          },
+          "401": {
+            "description": "Not Authorised"
+          }
+        }        
+      }
+    },
+    "/search/officers/": {
+      "get": {
+        "summary": "Search Officers",
+        "description": "Search for officer information",
+        "operationId": "SearchOfficers",
+        "parameters": [
+          { "$ref": "#/parameters/QueryString" },
+          { "$ref": "#/parameters/NumberOfItems"},
+          { "$ref": "#/parameters/StartIndex"}
+        ],
+        "responses": {
+          "200": {
+            "description": "Company Search",
+            "schema": {
+              "$ref": "#/definitions/OfficerSearch"
+            }
+          },
+          "401": {
+            "description": "Not Authorised"
+          }
+        } 
+      }
+    },
+    "/search/disqualified-officers/": {
+      "get": {
+        "summary": "Search disqualified officers",
+        "description": "Search for disqualified officer information\r\n",
+        "operationId": "SearchDisqualifiedOfficers",
+        "parameters": [
+          { "$ref": "#/parameters/QueryString" },
+          { "$ref": "#/parameters/NumberOfItems"},
+          { "$ref": "#/parameters/StartIndex"}
+        ],
+        "responses": {
+          "200": {
+            "description": "Company Search",
+            "schema": {
+              "$ref": "#/definitions/DisqualifiedOfficerSearch"
+            }
+          },
+          "401": {
+            "description": "Not Authorised"
+          }
+        }
+      }
+    },
+    "/company/{companynumber}/":{
+      "get": {
+        "summary": "Company Profile",
+        "description": "Get the basic company information",
+        "operationId": "GetCompanyByNumber",
+        "parameters": [
+          {"$ref": "#/parameters/CompanyNumber"}
+        ],
+        "tags": [
+            "companyProfile"
+        ],
+        "responses": {
+            "200": {
+                "description": "readCompanyProfile",
+                "headers": {
+                    "ETag": {
+                        "description": "The ETag of the resource.",
+                        "type": "string"
+                    }
+                },
+                "schema": {
+                    "$ref": "#/definitions/CompanyProfile"
+                }
+            },
+            "401": {
+                "description": "Unauthorised"
+            },
+            "404": {
+                "description": "Resource not found"
+            }
+        }
+    }
+    },
+    "/company/{companynumber}/officers": {
+      "get": {
+        "summary": "Company Officers",
+        "description": "List of all Company officers",
+        "operationId": "GetCompanyOfficers",
+        "x-operationName": "list",
+        "tags": [
+            "officers"
+        ],
+        "parameters": [
+          {"$ref": "#/parameters/CompanyNumber"},
+          {"$ref": "#/parameters/NumberOfItems"},
+          {"$ref": "#/parameters/RegisterType"},
+          {"$ref": "#/parameters/RegisterView"},
+          {"$ref": "#/parameters/StartIndex"},
+          {"$ref": "#/parameters/OrderByOfficers"}  
+          ],
+        "responses": {
+            "200": {
+                "description": "List the company officers",
+                "headers": {
+                    "ETag": {
+                        "description": "The ETag of the resource.",
+                        "type": "string"
+                    }
+                },
+                "schema": {
+                    "$ref": "#/definitions/OfficerList"
+                }
+            },
+            "401": {
+                "description": "Unauthorised"
+            },
+            "400": {
+                "description": "Bad request",
+                "schema": {
+                    "$ref": "#/definitions/Error"
+                }
+            }
+        }
+    }
+    },
+    "/officers/{officer_id}/appointments": {
+      "get": {
+        "summary": "Officer Appointment List",
+        "tags": [
+            "officerAppointments"
+        ],
+        "x-operationName": "list",
+        "operationId":"GetOfficerAppointments",
+        "description": "List of all officer appointments",
+        "parameters": [
+            { "$ref":"#/parameters/OfficerId"            },
+            { "$ref":"#/parameters/NumberOfItems"},
+            { "$ref":"#/parameters/StartIndex" }
+        ],
+        "responses": {
+            "200": {
+                "description": "List the officer appointments",
+                "headers": {
+                    "ETag": {
+                        "description": "The ETag of the resource.",
+                        "type": "string"
+                    }
+                },
+                "schema": {
+                    "$ref": "#/definitions/AppointmentList"
+                }
+            },
+            "400": {
+                "description": "Bad request"
+            },
+            "401": {
+                "description": "Unauthorised"
+            }
+        }
+    }
+    }
+  },
+  "definitions": {
+    "SearchItems": {
+      "title": "SearchItems",
+      "type":"object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "The title of the search result."
+        },
+        "address_snippet": {
+          "type": "string",
+          "description": "A single line address. This will be the address that matched within the indexed document or the primary address otherwise (as returned by the `address` member)."
+        },
+        "links": {
+          "type": "object",
+          "description": "The URL of the search result.",
+          "properties": {
+            "self": {
+              "type": "string",
+              "description": "The URL of the resource being returned by the search item."
+            }
+          }
+        },
+        "description": {
+          "type": "string",
+          "description": "The result description."
+        },
+        "snippet": {
+          "type": "string",
+          "description": "Summary information for the result showing additional details that have matched."
+        },
+        "matches": {
+          "type": "object",
+          "description": "A list of members and arrays of character offset defining substrings that matched the search terms.",
+          "properties": {
+            "title": {
+              "items": {
+                "type": "integer",
+                "format":"int32"            
+              },
+              "type": "array",
+              "description": "An array of character offset into the `title` string. These always occur in pairs and define the start and end of substrings in the member `title` that matched the search terms. The first character of the string is index 1."
+            },
+            "snippet": {
+              "items": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "type": "array",
+              "description": "An array of character offset into the `snippet` string. These always occur in pairs and define the start and end of substrings in the member `snippet` that matched the search terms. The first character of the string is index 1."
+            },
+            "address_snippet": {
+              "items": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "type": "array",
+              "description": "An array of character offset into the `address_snippet` string. These always occur in pairs and define the start and end of substrings in the member `address_snippet` that matched the search terms."
+            }
+          }
+        },
+        "kind": {
+          "type": "string",
+          "description": "The type of search result. Refer to the full resource descriptions [CompanySearch resource](api/docs/company/company_number/CompanySearch-resource.html)  [OfficerSearch resource] (api/docs/company/company_number/OfficerSearch-resource.html) and [DisqualifiedOfficerSearch resource](api/docs/company/company_number/DisqualifiedOfficerSearch-resource.html) for the full list of members returned.",
+          "enum": [
+            "searchresults#company",
+            "searchresults#officer",
+            "searchresults#disqualified-officer"
+          ]
+        },
+        "description_identifier": {
+          "items": {
+            "type": "string",
+            "enum": [
+              "incorporated-on",
+              "registered-on",
+              "formed-on",
+              "dissolved-on",
+              "converted-closed-on",
+              "closed-on",
+              "closed",
+              "first-uk-establishment-opened-on",
+              "opened-on",
+              "voluntary-arrangement",
+              "receivership",
+              "insolvency-proceedings",
+              "liquidation",
+              "administration",
+              "appointment-count",
+              "born-on"
+            ]
+          },
+          "type": "array",
+          "description": "An array of enumeration types that make up the search description. See search_descriptions_raw.yaml in api-enumerations"
+        },
+        "address": {
+          "description": "The address of the company's registered office.",
+          "type": "object",
+          "required": [
+            "address_line_1"
+          ],
+          "properties": {
+            "address_line_1": {
+              "description": "The first line of the address.",
+              "type": "string"
+            },
+            "address_line_2": {
+              "description": "The second line of the address.",
+              "type": "string"
+            },
+            "country": {
+              "description": "The country.",
+              "enum": [
+                "Wales",
+                "England",
+                "Scotland",
+                "Great Britain",
+                "Not specified",
+                "United Kingdom",
+                "Northern Ireland"
+              ],
+              "type": "string"
+            },
+            "locality": {
+              "description": "The locality e.g London.",
+              "type": "string"
+            },
+            "po_box": {
+              "description": "The post-office box number.",
+              "type": "string"
+            },
+            "postal_code": {
+              "description": "The postal code e.g CF14 3UZ.",
+              "type": "string"
+            },
+            "care_of": {
+              "description": "The care of name.",
+              "type": "string"
+            },
+            "region": {
+              "description": "The region e.g Surrey.",
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "Search": {
+      "title": "Search",
+      "type": "object",
+      "properties": {
+        "total_results": {
+          "type": "integer",
+          "format": "int32",
+          "description": "The number of further search results available for the current search."
+        },
+        "start_index": {
+          "type": "integer",
+          "format": "int32",
+          "description": "The index into the entire result set that this result page starts."
+        },
+        "items_per_page": {
+          "type": "integer",
+          "format": "int32",
+          "description": "The number of search items returned per page."
+        },
+        "etag": {
+          "type": "string",
+          "description": "The ETag of the resource"
+        },
+        "kind": {
+          "type": "string",
+          "description": "The type of search response returned.",
+          "enum": [
+            "search#all"
+          ]
+        },
+        "items": {
+          "type": "array",
+          "description": "The results of the completed search. See `items.kind` for details of each specific result resource returned.,",
+          "items": {
+            "$ref": "#/definitions/SearchItems"
+          }
+        }
+      }
+    },
+    "CompanySearchItems": {
+      "title": "CompanySearchItems",
+      "type":"object",
+      "required": [
+          "kind",
+          "title",
+          "address_snippet",
+          "links",
+          "company_number",
+          "date_of_creation",
+          "company_type",
+          "company_status",
+          "address"
+      ],
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "The title of the search result."
+        },
+        "address_snippet": {
+          "type": "string",
+          "description": "A single line address. This will be the address that matched within the indexed document or the primary address otherwise (as returned by the `address` member)."
+        },
+        "links": {
+          "type": "object",
+          "description": "The URL of the search result.",
+          "properties": {
+            "self": {
+              "type": "string",
+              "description": "The URL of the resource being returned by the search item."
+            }
+          }
+        },
+        "description": {
+          "type": "string",
+          "description": "The result description."
+        },
+        "snippet": {
+          "type": "string",
+          "description": "Summary information for the result showing additional details that have matched."
+        },
+        "matches": {
+          "type": "object",
+          "description": "A list of members and arrays of character offset defining substrings that matched the search terms.",
+          "properties": {
+            "title": {
+              "items": {
+                "type": "integer",
+                "format":"int32"            
+              },
+              "type": "array",
+              "description": "An array of character offset into the `title` string. These always occur in pairs and define the start and end of substrings in the member `title` that matched the search terms. The first character of the string is index 1."
+            },
+            "snippet": {
+              "items": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "type": "array",
+              "description": "An array of character offset into the `snippet` string. These always occur in pairs and define the start and end of substrings in the member `snippet` that matched the search terms. The first character of the string is index 1."
+            },
+            "address_snippet": {
+              "items": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "type": "array",
+              "description": "An array of character offset into the `address_snippet` string. These always occur in pairs and define the start and end of substrings in the member `address_snippet` that matched the search terms."
+            }
+          }
+        },
+        "kind": {
+              "type": "string",
+              "description": "The type of search result.",
+              "enum": [
+                  "searchresults#company"
+              ]
+          },
+        "description_identifier": {
+              "items": {
+                  "type": "string",
+                  "enum": [
+                      "incorporated-on",
+                      "registered-on",
+                      "formed-on",
+                      "dissolved-on",
+                      "converted-closed-on",
+                      "closed-on",
+                      "closed",
+                      "first-uk-establishment-opened-on",
+                      "opened-on",
+                      "voluntary-arrangement",
+                      "receivership",
+                      "insolvency-proceedings",
+                      "liquidation",
+                      "administration"
+                  ]
+              },
+              "type": "array",
+              "description": "An array of enumeration types that make up the search description. See search_descriptions_raw.yaml in api-enumerations"
+          },
+        "company_number": {
+              "type": "string",
+              "description": "The company registration / incorporation number of the company."
+          },
+        "date_of_creation": {
+              "type": "string",
+              "format": "date",
+              "description": "The date the company was created."
+          },
+        "date_of_cessation": {
+              "type": "string",
+              "format": "date",
+              "description": "The date the company ended."
+          },
+        "company_type": {
+              "type": "string",
+              "enum": [
+                  "private-unlimited",
+                  "ltd",
+                  "plc",
+                  "old-public-company",
+                  "private-limited-guarant-nsc-limited-exemption",
+                  "limited-partnership",
+                  "private-limited-guarant-nsc",
+                  "converted-or-closed",
+                  "private-unlimited-nsc",
+                  "private-limited-shares-section-30-exemption",
+                  "assurance-company",
+                  "oversea-company",
+                  "eeig",
+                  "icvc-securities",
+                  "icvc-warrant",
+                  "icvc-umbrella",
+                  "industrial-and-provident-society",
+                  "northern-ireland",
+                  "northern-ireland-other",
+                  "royal-charter",
+                  "investment-company-with-variable-capital",
+                  "unregistered-company",
+                  "llp",
+                  "other",
+                  "european-public-limited-liability-company-se"
+              ],
+              "description": "The company type."
+          },
+        "company_status": {
+              "type": "string",
+              "enum": [
+                  "active",
+                  "dissolved",
+                  "liquidation",
+                  "receivership",
+                  "administration",
+                  "voluntary-arrangement",
+                  "converted-closed",
+                  "insolvency-proceedings"
+              ],
+              "description": "The company status."
+          },
+          "address": {
+            "description": "The address of the company's registered office.",
+            "type": "object",
+            "required": [
+              "address_line_1"
+            ],
+            "properties": {
+              "address_line_1": {
+                "description": "The first line of the address.",
+                "type": "string"
+              },
+              "address_line_2": {
+                "description": "The second line of the address.",
+                "type": "string"
+              },
+              "country": {
+                "description": "The country.",
+                "enum": [
+                  "Wales",
+                  "England",
+                  "Scotland",
+                  "Great Britain",
+                  "Not specified",
+                  "United Kingdom",
+                  "Northern Ireland"
+                ],
+                "type": "string"
+              },
+              "locality": {
+                "description": "The locality e.g London.",
+                "type": "string"
+              },
+              "po_box": {
+                "description": "The post-office box number.",
+                "type": "string"
+              },
+              "postal_code": {
+                "description": "The postal code e.g CF14 3UZ.",
+                "type": "string"
+              },
+              "care_of": {
+                "description": "The care of name.",
+                "type": "string"
+              },
+              "region": {
+                "description": "The region e.g Surrey.",
+                "type": "string"
+              }
+            }
+          }
+      }
+    },
+    "CompanySearch": {
+      "title": "Search",
+      "type": "object",
+      "properties": {
+        "total_results": {
+          "type": "integer",
+          "format": "int32",
+          "description": "The number of further search results available for the current search."
+        },
+        "start_index": {
+          "type": "integer",
+          "format": "int32",
+          "description": "The index into the entire result set that this result page starts."
+        },
+        "items_per_page": {
+          "type": "integer",
+          "format": "int32",
+          "description": "The number of search items returned per page."
+        },
+        "etag": {
+          "type": "string",
+          "description": "The ETag of the resource"
+        },
+        "kind": {
+          "type": "string",
+          "description": "The type of search response returned.",
+          "enum": [
+            "search#all"
+          ]
+        },
+        "items": {
+          "type": "array",
+          "description": "The results of the completed search. See `items.kind` for details of each specific result resource returned.,",
+          "items": {
+            "$ref": "#/definitions/SearchItems"
+          }
+        }
+      }
+    },
+    "OfficerSearchItems": {
+      "title": "OfficerSearchItems",
+      "type":"object",
+      "required": [
+          "appointment_count",
+          "description",
+          "kind",
+          "title",
+          "address_snippet",
+          "address"
+      ],
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "The title of the search result."
+        },
+        "address_snippet": {
+          "type": "string",
+          "description": "A single line address. This will be the address that matched within the indexed document or the primary address otherwise (as returned by the `address` member)."
+        },
+        "links": {
+          "type": "object",
+          "description": "The URL of the search result.",
+          "properties": {
+            "self": {
+              "type": "string",
+              "description": "The URL of the resource being returned by the search item."
+            }
+          }
+        },
+        "description": {
+          "type": "string",
+          "description": "The result description."
+        },
+        "snippet": {
+          "type": "string",
+          "description": "Summary information for the result showing additional details that have matched."
+        },
+        "matches": {
+          "type": "object",
+          "description": "A list of members and arrays of character offset defining substrings that matched the search terms.",
+          "properties": {
+            "title": {
+              "items": {
+                "type": "integer",
+                "format":"int32"            
+              },
+              "type": "array",
+              "description": "An array of character offset into the `title` string. These always occur in pairs and define the start and end of substrings in the member `title` that matched the search terms. The first character of the string is index 1."
+            },
+            "snippet": {
+              "items": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "type": "array",
+              "description": "An array of character offset into the `snippet` string. These always occur in pairs and define the start and end of substrings in the member `snippet` that matched the search terms. The first character of the string is index 1."
+            },
+            "address_snippet": {
+              "items": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "type": "array",
+              "description": "An array of character offset into the `address_snippet` string. These always occur in pairs and define the start and end of substrings in the member `address_snippet` that matched the search terms."
+            }
+          }
+        },    
+        "kind": {
+              "type": "string",
+              "description": "Describes the type of result returned.",
+              "enum": [
+                  "searchresults#officer"
+              ]
+          },
+        "date_of_birth": {
+            "description": "The officer date of birth details.",
+            "type":"object",
+            "required": [
+              "month",
+              "year"
+            ],
+            "properties": {
+              "month": {
+                  "description": "The month the officer was born in.",
+                  "type": "integer"
+              },
+              "year": {
+                  "description": "The year the officer was born in.",
+                  "type": "integer"
+              }
+          }
+        },
+        "appointment_count": {
+            "type": "integer",
+            "description": "The total number of appointments the officer has."
+        },
+        "description_identifiers": {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "enum": [
+                    "appointment-count",
+                    "born-on"
+                ]
+            },
+            "description": "An array of enumeration types that make up the search description. See search_descriptions_raw.yaml in api-enumerations."
+        },
+        "address": {
+            "type": "object",
+            "description": "The service address of the officer.",
+            "properties": {
+              "address_line_1": {
+                  "description": "The first line of the address.",
+                  "type": "string"
+              },
+              "address_line_2": {
+                  "description": "The second line of the address.",
+                  "type": "string"
+              },
+              "care_of": {
+                  "description": "The care of name.",
+                  "type": "string"
+              },
+              "country": {
+                  "description": "The country. For example UK.",
+                  "type": "string"
+              },
+              "locality": {
+                  "description": "The locality. For example London.",
+                  "type": "string"
+              },
+              "po_box": {
+                  "description": "The post-office box number.",
+                  "type": "string"
+              },
+              "postal_code": {
+                  "description": "The postal code. For example CF14 3UZ.",
+                  "type": "string"
+              },
+              "premises": {
+                  "description": "The property name or number.",
+                  "type": "string"
+              },
+              "region": {
+                  "description": "The region. For example Surrey.",
+                  "type": "string"
+              }
+          }
+        }
+      }
+    },
+    "OfficerSearch": {
+      "title": "OfficerSearch",
+      "type":"object",
+      "required": [
+          "kind"
+      ],
+      "properties": {
+        "total_results": {
+          "type": "integer",
+          "format": "int32",
+          "description": "The number of further search results available for the current search."
+        },
+        "start_index": {
+          "type": "integer",
+          "format": "int32",
+          "description": "The index into the entire result set that this result page starts."
+        },
+        "items_per_page": {
+          "type": "integer",
+          "format": "int32",
+          "description": "The number of search items returned per page."
+        },
+        "etag": {
+          "type": "string",
+          "description": "The ETag of the resource"
+        },
+        "kind": {
+            "type": "string",
+              "description": "The type of response returned.",
+              "enum": [
+                  "search#officers"
+              ]
+          },
+        "items": {
+            "type": "array",
+            "description": "The results of the completed search.",
+            "items": {
+                "$ref": "#/definitions/OfficerSearchItems"
+            }
+        }
+      }
+    },
+    "DisqualifiedOfficerSearchItems": {      
+      "title": "DisqualifiedOfficerSearchItems",
+      "type":"object",
+      "required": [
+          "kind",
+          "title",
+          "description",
+          "address",
+          "address_snippet"
+      ],
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "The title of the search result."
+        },
+        "address_snippet": {
+          "type": "string",
+          "description": "A single line address. This will be the address that matched within the indexed document or the primary address otherwise (as returned by the `address` member)."
+        },
+        "links": {
+          "type": "object",
+          "description": "The URL of the search result.",
+          "properties": {
+            "self": {
+              "type": "string",
+              "description": "The URL of the resource being returned by the search item."
+            }
+          }
+        },
+        "description": {
+          "type": "string",
+          "description": "The result description."
+        },
+        "snippet": {
+          "type": "string",
+          "description": "Summary information for the result showing additional details that have matched."
+        },
+        "matches": {
+          "type": "object",
+          "description": "A list of members and arrays of character offset defining substrings that matched the search terms.",
+          "properties": {
+            "title": {
+              "items": {
+                "type": "integer",
+                "format":"int32"            
+              },
+              "type": "array",
+              "description": "An array of character offset into the `title` string. These always occur in pairs and define the start and end of substrings in the member `title` that matched the search terms. The first character of the string is index 1."
+            },
+            "snippet": {
+              "items": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "type": "array",
+              "description": "An array of character offset into the `snippet` string. These always occur in pairs and define the start and end of substrings in the member `snippet` that matched the search terms. The first character of the string is index 1."
+            },
+            "address_snippet": {
+              "items": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "type": "array",
+              "description": "An array of character offset into the `address_snippet` string. These always occur in pairs and define the start and end of substrings in the member `address_snippet` that matched the search terms."
+            }
+          }
+        },    
+        "kind": {
+            "type": "string",
+            "description": "Describes the type of result returned.",
+            "enum": [
+                "searchresults#disqualified-officer"
+            ]
+        },
+        "date_of_birth": {
+            "type": "string",
+            "format": "date",
+            "description": "The disqualified officer's date of birth."
+        },
+        "description_identifiers": {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "enum": [
+                    "born-on"
+                ]
+            },
+            "description": "An array of enumeration types that make up the search description. See search_descriptions_raw.yaml in api-enumerations."
+        },
+        "address": {
+            "type": "object",
+            "description": "The address of the disqualified officer as provided by the disqualifying authority.",
+            "properties": {
+              "address_line_1": {
+                  "description": "The first line of the address.",
+                  "type": "string"
+              },
+              "address_line_2": {
+                  "description": "The second line of the address.",
+                  "type": "string"
+              },
+              "country": {
+                  "description": "The country. For example UK.",
+                  "type": "string"
+              },
+              "locality": {
+                  "description": "The locality. For example London.",
+                  "type": "string"
+              },
+              "postal_code": {
+                  "description": "The postal code. For example CF14 3UZ.",
+                  "type": "string"
+              },
+              "premises": {
+                  "description": "The property name or number.",
+                  "type": "string"
+              },
+              "region": {
+                  "description": "The region. For example Surrey.",
+                  "type": "string"
+              }
+          }
+        }
+      }
+    },
+    "DisqualifiedOfficerSearch": {      
+      "title": "DisqualifiedOfficerSearch",
+      "type":"object",
+      "required": [
+          "kind",
+          "total_results",
+          "start_index",
+          "items_per_page"
+      ],
+      "properties": {
+        "total_results": {
+          "type": "integer",
+          "format": "int32",
+          "description": "The number of further search results available for the current search."
+        },
+        "start_index": {
+          "type": "integer",
+          "format": "int32",
+          "description": "The index into the entire result set that this result page starts."
+        },
+        "items_per_page": {
+          "type": "integer",
+          "format": "int32",
+          "description": "The number of search items returned per page."
+        },
+        "etag": {
+          "type": "string",
+          "description": "The ETag of the resource"
+        },
+        "kind": {
+            "type": "string",
+            "description": "The type of response returned.",
+            "enum": [
+                "search#disqualified-officers"
+            ]
+        },
+        "items": {
+            "type": "array",
+            "description": "The results of the completed search.",
+            "items": {
+                "$ref": "#/definitions/DisqualifiedOfficerSearchItems"
+            }
+        }
+      }
+    },
+    "PreviousCompanyNames": {
+      "title": "previousCompanyNames",
+      "type":"object",
+      "properties": {
+          "name": {
+              "description": "The previous company name",
+              "type": "string"
+          },
+          "effective_from": {
+              "description": "The string from which the company name was effective.",
+              "type": "string",
+              "format": "date"
+          },
+          "ceased_on": {
+              "description": "The string on which the company name ceased.",
+              "type": "string",
+              "format": "date"
+          }
+      },
+      "required": [
+          "name",
+          "effective_from",
+          "ceased_on"
+      ]
+    },
+    "CompanyProfile": {
+      "title": "companyProfile",
+      "type": "object",
+      "required": [
+          "company_name",
+          "jurisdiction",
+          "company_number",
+          "company_status",
+          "type",
+          "date_of_creation",
+          "can_file",
+          "links"
+      ],
+      "properties": {
+          "accounts": {
+            "description": "Company accounts information.",
+            "type": "object",
+            "properties": {
+              "accounting_reference_date": {
+                  "description": "The Accounting Reference Date (ARD) of the company.",
+                  "type": "object",
+                  "properties": {
+                    "day": {
+                        "type": "string",
+                        "description": "The Accounting Reference Date (ARD) day."
+                    },
+                    "month": {
+                        "type": "string",
+                        "description": "The Accounting Reference Date (ARD) month."
+                    }
+                }
+              },
+              "last_accounts": {
+                  "description": "The last company accounts filed.",
+                  "type": "object",
+                  "properties": {
+                    "made_up_to": {
+                        "type": "string",
+                        "format": "date",
+                        "description": "The date the last company accounts were made up to."
+                    },
+                    "type": {
+                        "description": "The type of the last company accounts filed.  \n For enumeration descriptions see `account_type` section in the [enumeration mappings](https://github.com/companieshouse/api-enumerations/blob/master/constants.yml).    ",
+                        "enum": [
+                            "null",
+                            "full",
+                            "small",
+                            "medium",
+                            "group",
+                            "dormant",
+                            "interim",
+                            "initial",
+                            "total-exemption-full",
+                            "total-exemption-small",
+                            "partial-exemption",
+                            "audit-exemption-subsidiary",
+                            "filing-exemption-subsidiary",
+                            "micro-entity",
+                            "no-accounts-type-available",
+                            "audited-abridged",
+                            "unaudited-abridged"
+                        ]
+                    }
+                },                
+                "required": [
+                    "type",
+                    "made_up_to"
+                ]
+              },
+              "next_due": {
+                  "description": "The date the next company accounts are due.",
+                  "type": "string",
+                  "format": "date"
+              },
+              "next_made_up_to": {
+                  "description": "The date the next company accounts should be made up to.",
+                  "type": "string",
+                  "format": "date"
+              },
+              "overdue": {
+                  "type": "boolean",
+                  "description": "Flag indicating if the company accounts are overdue."
+              }
+            }
+          },            
+          "annual_return": {
+              "description": "Annual return information. This member is only returned if a confirmation statement has not be filed.",
+              "type": "object",
+              "properties": {
+                "last_made_up_to": {
+                    "description": "The date the last annual return was made up to.",
+                    "type": "string",
+                    "format": "date"
+                },
+                "next_due": {
+                    "description": "The date the next annual return is due. This member will only be returned if a confirmation statement has not been filed and the date is before 28th July 2016, otherwise refer to `confirmation_statement.next_due`",
+                    "type": "string",
+                    "format": "date"
+                },
+                "next_made_up_to": {
+                    "description": "The date the next annual return should be made up to. This member will only be returned if a confirmation statement has not been filed and the date is before 30th July 2016, otherwise refer to `confirmation_statement.next_made_up_to`",
+                    "type": "string",
+                    "format": "date"
+                },
+                "overdue": {
+                    "description": "Flag indicating if the annual return is overdue.",
+                    "type": "boolean"
+                }
+            }
+          },
+          "can_file": {
+              "description": "Flag indicating whether this company can file.",
+              "type": "boolean"
+          },
+          "confirmation_statement": {
+              "description": "Confirmation statement information.",
+              "type": "object",
+              "properties": {
+                "last_made_up_to": {
+                    "description": "The date to which the company last made a confirmation statement.",
+                    "type": "string",
+                    "format": "date"
+                },
+                "next_due": {
+                    "description": "The date by which the next confimation statement must be received.",
+                    "type": "string",
+                    "format": "date"
+                },
+                "next_made_up_to": {
+                    "description": "The date to which the company must next make a confirmation statement.",
+                    "type": "string",
+                    "format": "date"
+                },
+                "overdue": {
+                    "description": "Flag indicating if the confirmation statement is overdue",
+                    "type": "boolean"
+                }
+            }
+          },
+          "company_name": {
+              "description": "The name of the company.",
+              "type": "string"
+          },
+          "jurisdiction": {
+              "description": "The jurisdiction specifies the political body responsible for the company.",
+              "type": "string",
+              "enum": [
+                  "england-wales",
+                  "wales",
+                  "scotland",
+                  "northern-ireland",
+                  "european-union",
+                  "united-kingdom",
+                  "england",
+                  "noneu"
+              ]
+          },
+          "company_number": {
+              "description": "The number of the company.",
+              "type": "string"
+          },
+          "date_of_creation": {
+              "description": "The date when the company was created.",
+              "type": "string",
+              "format": "date"
+          },
+          "date_of_cessation": {
+              "description": "The date which the company was converted/closed or dissolved. Please refer to company status to determine which.",
+              "type": "string",
+              "format": "date"
+          },
+          "etag": {
+              "description": "The ETag of the resource.",
+              "type": "string"
+          },
+          "has_been_liquidated": {
+              "description": "The flag indicating if the company has been liquidated in the past.",
+              "type": "boolean"
+          },
+          "has_charges": {
+              "description": "The flag indicating if the company has any charges.",
+              "type": "boolean"
+          },
+          "is_community_interest_company": {
+              "description": "The flag indicating if the company is a Community Interest Company.",
+              "type": "boolean"
+          },
+          "foreign_company_details": {
+              "description": "Foreign company details.",
+              "type": "object",
+              "properties": {
+                "originating_registry": {
+                    "description": "Company origin informations",
+                    "type": "object",
+                    "properties": {
+                      "country": {
+                          "description": "Country in which company was incorporated.",
+                          "type": "string"
+                      },
+                      "name": {
+                          "description": "Identity of register in country of incorporation.",
+                          "type": "string"
+                      }
+                  }
+                },
+                "registration_number": {
+                    "description": "Registration number in company of incorporation.",
+                    "type": "string"
+                },
+                "governed_by": {
+                    "description": "Law governing the company in country of incorporation.",
+                    "type": "string"
+                },
+                "company_type": {
+                    "description": "Legal form of the company in the country of incorporation.",
+                    "type": "string"
+                },
+                "is_a_credit_finance_institution": {
+                    "description": "Is it a financial or credit institution.",
+                    "type": "boolean"
+                },
+                "accounts": {
+                    "description": "Foreign company account information.",
+                    "type": "object",
+                    "properties":{
+                      "account_period_from:": {
+                        "description": "Date account period starts under parent law.",                
+                        "type": "object",
+                        "properties":{
+                          "day": {
+                            "description": "Day on which accounting period starts under parent law.",
+                            "type": "integer"
+                        },                 
+                          "month": {
+                              "description": "Month in which accounting period starts under parent law.",
+                              "type": "integer"
+                          }
+                        }
+                      },
+                      "account_period_to": {
+                          "description": "Date account period ends under parent law.",
+                          "type": "object",
+                          "properties":{
+                            "day": {
+                              "description": "Day on which accounting period ends under parent law.",
+                              "type": "integer"
+                            },
+                            "month": {
+                                "description": "Month in which accounting period ends under parent law.",
+                                "type": "integer"
+                            }
+                          }
+                      },
+                      "must_file_within": {
+                          "description": "Time allowed from period end for disclosure of accounts under parent law.",
+                          "type": "object",
+                          "properties":{
+                            "months": {
+                              "description": "Number of months within which to file.",
+                              "type": "integer"
+                            }
+                          }
+                      }                                                                     
+                    }
+                },
+                "business_activity": {
+                    "description": "Type of business undertaken by the company.",
+                    "type": "string"
+                },
+                "accounting_requirement": {
+                    "description": "Accounts requirement.",
+                    "type": "object",
+                    "properties": {
+                      "foreign_account_type": {
+                          "description": "Type of accounting requirement that applies.  \n For enumeration descriptions see `foreign_account_type` section in the [enumeration mappings] (https://github.com/companieshouse/api-enumerations/blob/master/constants.yml).  ",
+                          "enum": [
+                              "accounting-requirements-of-originating-country-apply",
+                              "accounting-requirements-of-originating-country-do-not-apply"
+                          ],
+                          "type": "string"
+                      },
+                      "terms_of_account_publication": {
+                          "description": "Describes how the publication date is derived.  \n For enumeration descriptions see `terms_of_account_publication` section in the [enumeration mappings] (https://github.com/companieshouse/api-enumerations/blob/master/constants.yml).  ",
+                          "enum": [
+                              "accounts-publication-date-supplied-by-company",
+                              "accounting-publication-date-does-not-need-to-be-supplied-by-company",
+                              "accounting-reference-date-allocated-by-companies-house"
+                          ],
+                          "type": "string"
+                      }
+                  }
+                }
+            }
+          },
+          "last_full_members_list_date": {
+              "description": "The date of last full members list update.",
+              "type": "string",
+              "format": "date"
+          },
+          "registered_office_address": {
+              "description": "The address of the company's registered office.",
+              "type": "object",
+              "properties": {
+                "care_of": {
+                    "description": "The care of name.",
+                    "type": "string"
+                },
+                "address_line_1": {
+                    "description": "The first line of the address.",
+                    "type": "string"
+                },
+                "address_line_2": {
+                    "description": "The second line of the address.",
+                    "type": "string"
+                },
+                "country": {
+                    "description": "The country.",
+                    "enum": [
+                        "Wales",
+                        "England",
+                        "Scotland",
+                        "Great Britain",
+                        "Not specified",
+                        "United Kingdom",
+                        "Northern Ireland"
+                    ],
+                    "type": "string"
+                },
+                "locality": {
+                    "description": "The locality e.g London.",
+                    "type": "string"
+                },
+                "po_box": {
+                    "description": "The post-office box number.",
+                    "type": "string"
+                },
+                "postal_code": {
+                    "description": "The postal code e.g CF14 3UZ.",
+                    "type": "string"
+                },
+                "premises": {
+                    "description": "The property name or number.",
+                    "type": "string"
+                },
+                "region": {
+                    "description": "The region e.g Surrey.",
+                    "type": "string"
+                }
+            }
+          },
+          "sic_codes": {
+              "description": "SIC codes for this company.",
+              "type": "array",
+              "items": {
+                  "type": "string"
+              }
+          },
+          "previous_company_names": {
+              "description": "The previous names of this company.",
+              "items": {
+                  "$ref": "#/definitions/PreviousCompanyNames"
+              },
+              "type": "array"
+          },
+          "company_status": {
+              "description": "The status of the company.  \n For enumeration descriptions see `company_status` section in the [enumeration mappings] (https://github.com/companieshouse/api-enumerations/blob/master/constants.yml)  ",
+              "type": "string",
+              "enum": [
+                  "active",
+                  "dissolved",
+                  "liquidation",
+                  "receivership",
+                  "administration",
+                  "voluntary-arrangement",
+                  "converted-closed",
+                  "insolvency-proceedings"
+              ]
+          },
+          "company_status_detail": {
+              "description": "Extra details about the status of the company.  \n For enumeration descriptions see `company_status_detail` section in the [enumeration mappings](https://github.com/companieshouse/api-enumerations/blob/master/constants.yml).  ",
+              "enum": [
+                  "transferred-from-uk",
+                  "active-proposal-to-strike-off",
+                  "petition-to-restore-dissolved",
+                  "transformed-to-se",
+                  "converted-to-plc"
+              ],
+              "type": "string"
+          },
+          "type": {
+              "description": "The type of the company.  \n For enumeration descriptions see `company_type` section in the [enumeration mappings](https://github.com/companieshouse/api-enumerations/blob/master/constants.yml)    ",
+              "enum": [
+                  "private-unlimited",
+                  "ltd",
+                  "plc",
+                  "old-public-company",
+                  "private-limited-guarant-nsc-limited-exemption",
+                  "limited-partnership",
+                  "private-limited-guarant-nsc",
+                  "converted-or-closed",
+                  "private-unlimited-nsc",
+                  "private-limited-shares-section-30-exemption",
+                  "protected-cell-company",
+                  "assurance-company",
+                  "oversea-company",
+                  "eeig",
+                  "icvc-securities",
+                  "icvc-warrant",
+                  "icvc-umbrella",
+                  "registered-society-non-jurisdictional",
+                  "industrial-and-provident-society",
+                  "northern-ireland",
+                  "northern-ireland-other",
+                  "royal-charter",
+                  "investment-company-with-variable-capital",
+                  "unregistered-company",
+                  "llp",
+                  "other",
+                  "european-public-limited-liability-company-se",
+                  "uk-establishment",
+                  "scottish-partnership",
+                  "charitable-incorporated-organisation",
+                  "scottish-charitable-incorporated-organisation",
+                  "further-education-or-sixth-form-college-corporation"
+              ],
+              "type": "string"
+          },
+          "has_insolvency_history": {
+              "description": "The flag indicating if the company has insolvency history.",
+              "type": "boolean"
+          },
+          "undeliverable_registered_office_address": {
+              "description": "Flag indicating whether post can be delivered to the registered office.",
+              "type": "boolean"
+          },
+          "registered_office_is_in_dispute": {
+              "description": "Flag indicating registered office address as been replaced.",
+              "type": "boolean"
+          },
+          "branch_company_details": {
+              "description": "UK branch of a foreign company.",
+              "type":"object",
+              "properties": {
+                "business_activity": {
+                    "description": "Type of business undertaken by the UK establishment.",
+                    "type": "string"
+                },
+                "parent_company_number": {
+                    "description": "Parent company number.",
+                    "type": "string"
+                },
+                "parent_company_name": {
+                    "description": "Parent company name.",
+                    "type": "string"
+                }
+            }
+          },
+          "links": {
+              "description": "A set of URLs related to the resource, including self.",
+              "type": "object",
+              "properties": {
+                "self": {
+                    "description": "The URL of the resource.",
+                    "type": "string"
+                },
+                "persons_with_significant_control": {
+                    "description": "The URL of the persons with significant control list resource.",
+                    "type": "string"
+                },
+                "persons_with_significant_control_statements": {
+                    "description": "The URL of the persons with significant control statements list resource.",
+                    "type": "string"
+                },
+                "registers": {
+                    "description": "The URL of the registers resource for this company",
+                    "type": "string"
+                }
+            }
+          }
+      }
+    },
+    "OfficerFormerNames": {
+      "title": "formerNames",
+      "type":"object",
+      "properties": {
+          "forenames": {
+              "description": "Former forenames of the officer.",
+              "type": "string"
+          },
+          "surname": {
+              "description": "Former surnames of the officer.",
+              "type": "string"
+          }
+      }
+    },
+    "OfficerSummary": {
+      "title": "officerSummary",
+      "type":"object",
+      "properties": {
+          "address": {
+              "description": "The correspondence address of the officer.",
+              "type": "object",
+                "required": [
+                    "address_line_1",
+                    "locality"
+                ],
+                "properties": {
+                    "address_line_1": {
+                        "description": "The first line of the address.",
+                        "type": "string"
+                    },
+                    "address_line_2": {
+                        "description": "The second line of the address.",
+                        "type": "string"
+                    },
+                    "care_of": {
+                        "description": "The care of name.",
+                        "type": "string"
+                    },
+                    "country": {
+                        "description": "The country e.g. United Kingdom.",
+                        "type": "string"
+                    },
+                    "locality": {
+                        "description": "The locality e.g. London.",
+                        "type": "string"
+                    },
+                    "po_box": {
+                        "description": "The post-office box number.",
+                        "type": "string"
+                    },
+                    "postal_code": {
+                        "description": "The postal code e.g. CF14 3UZ.",
+                        "type": "string"
+                    },
+                    "premises": {
+                        "description": "The property name or number.",
+                        "type": "string"
+                    },
+                    "region": {
+                        "description": "The region e.g. Surrey.",
+                        "type": "string"
+                    }
+                  }
+          },                  
+          "appointed_on": {
+              "description": "The date on which the officer was appointed.",
+              "type": "string",
+              "format": "date"              
+          },
+          "country_of_residence": {
+              "description": "The officer's country of residence.",
+              "type": "string"
+          },
+          "date_of_birth": {
+              "description": "Details of director date of birth.",
+              "type": "object",
+              "properties": {
+                "day": {
+                    "description": "The day of the date of birth.",
+                    "type": "integer",
+                    "format":"int32"
+                },
+                "month": {
+                    "description": "The month of date of birth.",
+                    "type": "integer",
+                    "format":"int32"
+                },
+                "year": {
+                    "description": "The year of date of birth.",
+                    "type": "integer",
+                    "format":"int32"
+                }
+              }
+          },          
+          "links": {
+              "description": "Links to other resources associated with this officer list item.",
+              "type": "object",
+              "required": [
+                "self"
+              ],
+              "properties": {
+                  "self": {
+                      "description": "Link to this officer list resource.",
+                      "type": "string"
+                  }
+              }
+          },
+          "name": {
+              "description": "Corporate or natural officer name.",
+              "type": "string"
+          },
+          "nationality": {
+              "description": "The officer's nationality.",
+              "type": "string"
+          },
+          "occupation": {
+              "description": "The officer's job title.",
+              "type": "string"
+          },
+          "officer_role": {
+              "enum": [
+                  "cic-manager",
+                  "corporate-director",
+                  "corporate-llp-designated-member",
+                  "corporate-llp-member",
+                  "corporate-manager-of-an-eeig",
+                  "corporate-member-of-a-management-organ",
+                  "corporate-member-of-a-supervisory-organ",
+                  "corporate-member-of-an-administrative-organ",
+                  "corporate-nominee-director",
+                  "corporate-nominee-secretary",
+                  "corporate-secretary",
+                  "director",
+                  "general-partner-in-a-limited-partnership",
+                  "judicial-factor",
+                  "limited-partner-in-a-limited-partnership",
+                  "llp-designated-member",
+                  "llp-member",
+                  "manager-of-an-eeig",
+                  "member-of-a-management-organ",
+                  "member-of-a-supervisory-organ",
+                  "member-of-an-administrative-organ",
+                  "nominee-director",
+                  "nominee-secretary",
+                  "person-authorised-to-accept",
+                  "person-authorised-to-represent",
+                  "person-authorised-to-represent-and-accept",
+                  "receiver-and-manager",
+                  "secretary"
+              ],
+              "type": "string"
+          },
+          "resigned_on": {
+              "description": "The date on which the officer resigned.",
+              "type": "string",
+              "format": "date"
+          },
+          "former_names": {
+              "description": "Former names for the officer.",
+              "items": {
+                  "$ref": "#/definitions/OfficerFormerNames"
+              },
+              "type": "array"
+          },
+          "identification": {
+              "description": "Only one from `eea`, `non-eea`, `uk-limited` or `other-corporate-body-or-firm` can be supplied, not multiples of them.",
+              "type": "object",
+              "properties": {
+                "identification_type": {
+                    "description": "The officer's identity type",
+                    "enum": [
+                        "eea",
+                        "non-eea",
+                        "uk-limited",
+                        "other-corporate-body-or-firm"
+                    ],
+                    "type": "string"
+                },
+                "legal_authority": {
+                    "description": "The legal authority supervising the company.",
+                    "type": "string"
+                },
+                "legal_form": {
+                    "description": "The legal form of the company as defined by its country of registration.",
+                    "type": "string"
+                },
+                "place_registered": {
+                    "description": "Place registered.",
+                    "type": "string"
+                },
+                "registration_number": {
+                    "description": "Company registration number.",
+                    "type": "string"
+                }
+            }
+          }
+      },
+      "required": [
+          "address",
+          "appointed_on",
+          "links",
+          "name",
+          "officer_role"
+      ]
+    },
+    "OfficerList": {
+      "title": "officerList",
+      "type":"object",
+      "properties": {
+          "active_count": {
+              "description": "The number of active officers in this result set.",
+              "type": "integer",
+              "format":"int32"
+          },
+          "etag": {
+              "description": "The ETag of the resource.",
+              "type": "string"
+          },
+          "items": {
+              "description": "The list of officers.",
+              "items": {
+                  "$ref": "#/definitions/OfficerSummary"
+              },
+              "type": "array"
+          },
+          "items_per_page": {
+              "description": "The number of officers to return per page.",
+              "type": "integer",
+              "format":"int32"
+          },
+          "kind": {
+              "enum": [
+                  "officer-list"
+              ],
+              "type": "string"
+          },
+          "links": {
+              "description": "Links to other resources associated with this officer list resource.",
+              "type": "object",
+              "required": [
+                "self"
+              ],
+              "properties": {
+                  "self": {
+                      "description": "Link to this officer list resource.",
+                      "type": "string"
+                  }
+              }
+          },
+          "resigned_count": {
+              "description": "The number of resigned officers in this result set.",
+              "type": "integer",
+              "format":"int32"
+          },
+          "start_index": {
+              "description": "The offset into the entire result set that this page starts.",
+              "type": "integer",
+              "format":"int32"
+          },
+          "total_results": {
+              "description": "The total number of officers in this result set.",
+              "type": "integer",
+              "format":"int32"
+          }
+      },
+      "required": [
+          "etag",
+          "items_per_page",
+          "kind",
+          "links",
+          "items",
+          "start_index",
+          "total_results",
+          "active_count",
+          "resigned_count"
+      ]
+    },
+    "FormerNames": {
+      "title": "formerNames",
+      "type":"object",
+      "properties": {
+          "forenames": {
+              "description": "Former forenames of the officer.",
+              "type": "string"
+          },
+          "surname": {
+              "description": "Former surnames of the officer.",
+              "type": "string"
+          }
+      }
+    },
+    "OfficerAppointmentSummary": {
+      "title": "officerAppointmentSummary",
+      "type":"object",
+      "properties": {
+          "address": {
+              "description": "The correspondence address of the officer.",
+              "type": "object",
+              "properties": {
+                "address_line_1": {
+                    "description": "The first line of the address.",
+                    "type": "string"
+                },
+                "address_line_2": {
+                    "description": "The second line of the address.",
+                    "type": "string"
+                },
+                "care_of": {
+                    "description": "The care of name.",
+                    "type": "string"
+                },
+                "country": {
+                    "description": "The country. For example, UK.",
+                    "type": "string"
+                },
+                "locality": {
+                    "description": "The locality. For example London.",
+                    "type": "string"
+                },
+                "po_box": {
+                    "description": "The post-office box number.",
+                    "type": "string"
+                },
+                "postal_code": {
+                    "description": "The postal code. For example CF14 3UZ.",
+                    "type": "string"
+                },
+                "premises": {
+                    "description": "The property name or number.",
+                    "type": "string"
+                },
+                "region": {
+                    "description": "The region. For example Surrey.",
+                    "type": "string"
+                }
+            }
+          },
+          "appointed_before": {
+              "description": "The date the officer was appointed before. Only present when the `is_pre_1992_appointment` attribute is `true`.",
+              "type": "string",
+              "format": "date"
+          },
+          "appointed_on": {
+              "description": "The date the officer was appointed.",
+              "type": "string",
+              "format": "date"
+          },
+          "appointed_to": {
+              "description": "The company information of the appointment.",
+              "type": "object",
+              "properties": {
+                "company_name": {
+                    "description": "The name of the company the officer is acting for.",
+                    "type": "string"
+                },
+                "company_number": {
+                    "description": "The number of the company the officer is acting for.",
+                    "type": "string"
+                },
+                "company_status": {
+                    "description": "The status of the company the officer is acting for.",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "company_number"
+            ]
+          },
+          "name": {
+              "description": "The full name of the officer.",
+              "type": "string"
+          },
+          "country_of_residence": {
+              "description": "The officer's country of residence.",
+              "type": "string"
+          },
+          "former_names": {
+              "description": "Former names for the officer, if there are any.",
+              "items": {
+                  "$ref": "#/definitions/FormerNames"
+              },
+              "type": "array"
+          },
+          "identification": {
+              "description": "Only one from `eea` or `non-eea` can be supplied, not both.",
+              "type": "object",
+              "properties": {
+                "identification_type": {
+                    "description": "The officer's identity type",
+                    "enum": [
+                        "eea",
+                        "non-eea"
+                    ],
+                    "type": "string"
+                },
+                "legal_authority": {
+                    "description": "The legal authority supervising the company.",
+                    "type": "string"
+                },
+                "legal_form": {
+                    "description": "The legal form of the company as defined by its country of registration.",
+                    "type": "string"
+                },
+                "place_registered": {
+                    "description": "Place registered.",
+                    "type": "string"
+                },
+                "registration_number": {
+                    "description": "Company registration number.",
+                    "type": "string"
+                }
+            }
+          },
+          "is_pre_1992_appointment": {
+              "description": "Indicator representing if the officer was appointed before their appointment date.",
+              "type": "boolean"
+          },
+          "links": {
+              "description": "Links to other resources associated with this officer appointment item.",
+              "type": "object",
+              "required": [
+                "company"
+              ],
+              "properties": {
+                  "company": {
+                      "description": "Link to the company profile resource that this appointment is associated with.",
+                      "type": "string"
+                  }
+              }
+          },                
+          "name_elements": {
+              "description": "A document encapsulating the separate elements of a natural officer's name.",
+              "type": "object",
+              "properties": {
+                "forename": {
+                    "description": "The forename of the officer.",
+                    "type": "string"
+                },
+                "title": {
+                    "description": "Title of the officer.",
+                    "type": "string"
+                },
+                "other_forenames": {
+                    "description": "Other forenames of the officer.",
+                    "type": "string"
+                },
+                "surname": {
+                    "description": "The surname of the officer.",
+                    "type": "string"
+                },
+                "honours": {
+                    "description": "Honours an officer might have.",
+                    "type": "string"
+                }
+              },
+              "required": [
+                  "surname"
+              ]
+          },
+          "nationality": {
+              "description": "The officer's nationality.",
+              "type": "string"
+          },
+          "occupation": {
+              "description": "The officer's occupation.",
+              "type": "string"
+          },
+          "officer_role": {
+              "enum": [
+                  "cic-manager",
+                  "corporate-director",
+                  "corporate-llp-designated-member",
+                  "corporate-llp-member",
+                  "corporate-member-of-a-management",
+                  "corporate-member-of-a-supervisory-organ",
+                  "corporate-member-of-an-administrative-organ",
+                  "corporate-nominee-director",
+                  "corporate-nominee-secretary",
+                  "corporate-secretary",
+                  "director",
+                  "judicial-factor",
+                  "llp-designated-member",
+                  "llp-member",
+                  "member-of-a-management",
+                  "member-of-a-supervisory-organ",
+                  "member-of-an-administrative-organ",
+                  "nominee-director",
+                  "nominee-secretary",
+                  "receiver-and-manager",
+                  "secretary"
+              ],
+              "type": "string"
+          },
+          "resigned_on": {
+              "description": "The date the officer was resigned.",
+              "type": "string",
+              "format": "date"
+          }
+      },
+      "required": [
+          "address",
+          "appointed_to",
+          "links",
+          "name",
+          "officer_role"
+      ]
+    },
+    "AppointmentList": {
+      "title": "appointmentList",
+      "type": "object",
+      "properties": {
+          "date_of_birth": {
+              "description": "The officer's date of birth details.",
+              "type": "object",
+              "properties": {
+                "month": {
+                    "description": "The month the officer was born in.",
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "year": {
+                    "description": "The year the officer was born in.",
+                    "type": "integer",
+                    "format":"int32"
+                }
+            }
+          },
+          "etag": {
+              "description": "The ETag of the resource.",
+              "type": "string"
+          },
+          "is_corporate_officer": {
+              "description": "Indicator representing if the officer is a corporate body.",
+              "type": "boolean"
+          },
+          "items": {
+              "description": "The list of officer appointments.",
+              "type": "array",
+              "items": {
+                  "$ref": "#/definitions/OfficerAppointmentSummary"
+              }
+          },
+          "items_per_page": {
+              "description": "The number of officer appointments to return per page.",
+              "type": "integer",
+              "format":"int32"
+          },
+          "kind": {
+              "enum": [
+                  "personal-appointment"
+              ],
+              "type": "string"
+          },
+          "links": {
+              "description": "Links to other resources associated with this officer appointment resource.",
+              "type": "object",
+              "properties": {
+                "self": {
+                    "description": "Link to this officer appointment resource.",
+                    "type": "string"
+                }
+            }
+          },
+          "name": {
+              "description": "The corporate or natural officer name.",
+              "type": "string"
+          },
+          "start_index": {
+              "description": "The first row of data to retrieve, starting at 0. Use this parameter as a pagination mechanism along with the `items_per_page` parameter.",
+              "type": "integer",
+              "format":"int32"
+          },
+          "total_results": {
+              "description": "The total number of officer appointments in this result set.",
+              "type": "integer",
+              "format":"int32"
+          }
+        },
+        "required": [
+            "etag",
+            "is_corporate_officer",
+            "items",
+            "items_per_page",
+            "kind",
+            "links",
+            "name",
+            "start_index",
+            "total_results"
+        ]
+    },
+    "ErrorValues": {
+      "title": "error_values",
+      "type":"object",
+      "properties": {
+          "<argument>": {
+              "type": "string",
+              "description": "The element name and value pair required to complete the error description, will repeat as necessary."
+          }
+      }
+    },
+    "ErrorDetail": {
+      "title": "errorDetail",
+      "type":"object",
+      "required": [
+          "type",
+          "error"
+      ],
+      "properties": {
+          "type": {
+              "type": "string",
+              "description": "Type of error",
+              "enum": [
+                  "ch:service",
+                  "ch:validation"
+              ]
+          },
+          "location_type": {
+              "type": "string",
+              "description": "Describes the type of location returned so that it may be parsed appropriately",
+              "enum": [
+                  "json-path",
+                  "query-parameter"
+              ]
+          },
+          "location": {
+              "type": "string",
+              "description": "The location in the submitted request in which the error relates. This parameter is only provided when errors[].type is set to \"ch:validation\"."
+          },
+          "error": {
+              "type": "string",
+              "description": "The error being returned. See github for valid [enumeration types](https://github.com/companieshouse/api-enumerations/blob/develop/errors.yml)"
+          },
+          "error_values": {
+              "type": "array",
+              "description": "A collection of argument name and value pairs which, when substituted into the error string, provide the full description of the error. As many name/value pairs as necessary to complete the error description are returned. See <a href=\"\">example</a> above.",
+              "items": {
+                  "$ref": "#/definitions/ErrorValues"
+              }
+          }
+      }
+    },
+    "Error": {
+      "title": "error",
+      "type":"object",
+      "required": [
+          "errors"
+      ],
+      "properties": {
+          "errors": {
+              "type": "array",
+              "description": "A list of errors found",
+              "items": {
+                  "$ref": "#/definitions/ErrorDetail"
+              }
+          }
+      }
+    }      
+  },
+  "parameters":  {
+    "QueryString":{
+      "name": "q",
+      "default": "marco amoedo",
+      "in": "query",
+      "type": "string",
+      "required": true,
+      "x-ms-summary" : "query",
+      "description" : "Query string for the search"
+    },
+    "NumberOfItems":{
+      "name": "items_per_page",
+      "default": "20",
+      "in": "query",
+      "type": "integer",
+      "format": "int32",
+      "required": true,
+      "x-ms-summary" : "number of items",
+      "description" : "Number of items per page for the results"
+    },
+    "StartIndex":{
+      "name": "start_index",
+      "default": "0",
+      "in": "query",
+      "type": "integer",
+      "format": "int32",
+      "required": true,
+      "x-ms-summary" : "start index",
+      "description" : "Start index for the results"
+    },
+    "CompanyNumber":{
+      "name": "companynumber",            
+      "in": "path",
+      "description": "The company number of the basic information to return.",
+      "x-ms-summary": "Company Number",
+      "x-ms-url-encoding": "single",
+      "required": true,
+      "type": "string"
+    },
+    "RegisterType":{
+      "name": "register_type",
+      "in": "query",
+      "description": "The register_type determines which officer type is returned for the registers view.The register_type field will only work if registers_view is set to true",
+      "type": "string",
+      "enum": [
+          "directors",
+          "secretaries",
+          "llp-members"
+      ],
+      "x-ms-summary": "Register Type"
+    },
+    "RegisterView":{
+      "name": "register_view",
+      "in": "query",
+      "description": "Display register specific information. If given register is held at Companies House, registers_view set to true and correct register_type specified, only active officers will be returned. Those will also have full date of birth.Defaults to false",
+      "type": "string",
+      "x-ms-summary": "Register View",
+      "enum": [
+          "true",
+          "false"
+      ]
+    },
+    "OrderByOfficers":{
+      "name": "order_by",
+      "in": "query",
+      "description": "The field by which to order the result set.",
+      "type": "string",
+      "x-ms-summary": "Order By",
+      "enum": [
+          "appointed_on",
+          "resigned_on",
+          "surname"
+      ]
+    },
+    "OfficerId":{      
+      "name": "officer_id",
+      "in": "path",
+      "description": "The officer id of the appointment list being requested.",
+      "required": true,
+      "type": "string",
+      "x-ms-summary": "Officer ID",
+      "x-ms-url-encoding":"single"
+    }    
+  },
+  "responses": {},
+  "securityDefinitions": {
+    "oauth2_auth": {
+      "type": "oauth2",
+      "flow": "accessCode",
+      "authorizationUrl": "https://identity.company-information.service.gov.uk/oauth2/authorise",
+      "tokenUrl": "https://identity.company-information.service.gov.uk/oauth2/token",
+      "scopes": {}
+    }
+  },
+  "security": [
+    {
+      "oauth2_auth": []
+    }
+  ],
+  "tags": [],
+  "x-ms-connector-metadata": [
+    {
+      "propertyName": "Website",
+      "propertyValue": "https://www.gov.uk/government/organisations/companies-house"
+    },
+    {
+      "propertyName": "Privacy policy",
+      "propertyValue": "https://www.gov.uk/government/organisations/companies-house/about/personal-information-charter"
+    },
+    {
+      "propertyName": "Categories",
+      "propertyValue": "Data;Productivity"
+    }
+  ]
+}
