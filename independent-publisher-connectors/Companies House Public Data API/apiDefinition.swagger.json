@@ -62,7 +62,7 @@
           "401": {
             "description": "Not Authorised"
           }
-        }        
+        }
       }
     },
     "/search/officers/": {
@@ -85,7 +85,7 @@
           "401": {
             "description": "Not Authorised"
           }
-        } 
+        }
       }
     },
     "/search/disqualified-officers/": {
@@ -159,7 +159,7 @@
           {"$ref": "#/parameters/RegisterType"},
           {"$ref": "#/parameters/RegisterView"},
           {"$ref": "#/parameters/StartIndex"},
-          {"$ref": "#/parameters/OrderByOfficers"}  
+          {"$ref": "#/parameters/OrderByOfficers"}
           ],
         "responses": {
             "200": {
@@ -178,10 +178,7 @@
                 "description": "Unauthorised"
             },
             "400": {
-                "description": "Bad request",
-                "schema": {
-                    "$ref": "#/definitions/Error"
-                }
+                "description": "Bad request"
             }
         }
     }
@@ -261,7 +258,7 @@
             "title": {
               "items": {
                 "type": "integer",
-                "format":"int32"            
+                "format":"int32"
               },
               "type": "array",
               "description": "An array of character offset into the `title` string. These always occur in pairs and define the start and end of substrings in the member `title` that matched the search terms. The first character of the string is index 1."
@@ -457,7 +454,7 @@
             "title": {
               "items": {
                 "type": "integer",
-                "format":"int32"            
+                "format":"int32"
               },
               "type": "array",
               "description": "An array of character offset into the `title` string. These always occur in pairs and define the start and end of substrings in the member `title` that matched the search terms. The first character of the string is index 1."
@@ -705,7 +702,7 @@
             "title": {
               "items": {
                 "type": "integer",
-                "format":"int32"            
+                "format":"int32"
               },
               "type": "array",
               "description": "An array of character offset into the `title` string. These always occur in pairs and define the start and end of substrings in the member `title` that matched the search terms. The first character of the string is index 1."
@@ -727,7 +724,7 @@
               "description": "An array of character offset into the `address_snippet` string. These always occur in pairs and define the start and end of substrings in the member `address_snippet` that matched the search terms."
             }
           }
-        },    
+        },
         "kind": {
               "type": "string",
               "description": "Describes the type of result returned.",
@@ -854,7 +851,7 @@
         }
       }
     },
-    "DisqualifiedOfficerSearchItems": {      
+    "DisqualifiedOfficerSearchItems": {
       "title": "DisqualifiedOfficerSearchItems",
       "type":"object",
       "required": [
@@ -898,7 +895,7 @@
             "title": {
               "items": {
                 "type": "integer",
-                "format":"int32"            
+                "format":"int32"
               },
               "type": "array",
               "description": "An array of character offset into the `title` string. These always occur in pairs and define the start and end of substrings in the member `title` that matched the search terms. The first character of the string is index 1."
@@ -920,7 +917,7 @@
               "description": "An array of character offset into the `address_snippet` string. These always occur in pairs and define the start and end of substrings in the member `address_snippet` that matched the search terms."
             }
           }
-        },    
+        },
         "kind": {
             "type": "string",
             "description": "Describes the type of result returned.",
@@ -979,7 +976,7 @@
         }
       }
     },
-    "DisqualifiedOfficerSearch": {      
+    "DisqualifiedOfficerSearch": {
       "title": "DisqualifiedOfficerSearch",
       "type":"object",
       "required": [
@@ -1112,7 +1109,7 @@
                             "unaudited-abridged"
                         ]
                     }
-                },                
+                },
                 "required": [
                     "type",
                     "made_up_to"
@@ -1133,7 +1130,7 @@
                   "description": "Flag indicating if the company accounts are overdue."
               }
             }
-          },            
+          },
           "annual_return": {
               "description": "Annual return information. This member is only returned if a confirmation statement has not be filed.",
               "type": "object",
@@ -1275,13 +1272,13 @@
                     "type": "object",
                     "properties":{
                       "account_period_from:": {
-                        "description": "Date account period starts under parent law.",                
+                        "description": "Date account period starts under parent law.",
                         "type": "object",
                         "properties":{
                           "day": {
                             "description": "Day on which accounting period starts under parent law.",
                             "type": "integer"
-                        },                 
+                        },
                           "month": {
                               "description": "Month in which accounting period starts under parent law.",
                               "type": "integer"
@@ -1311,7 +1308,7 @@
                               "type": "integer"
                             }
                           }
-                      }                                                                     
+                      }
                     }
                 },
                 "business_activity": {
@@ -1593,11 +1590,11 @@
                         "type": "string"
                     }
                   }
-          },                  
+          },
           "appointed_on": {
               "description": "The date on which the officer was appointed.",
               "type": "string",
-              "format": "date"              
+              "format": "date"
           },
           "country_of_residence": {
               "description": "The officer's country of residence.",
@@ -1623,7 +1620,7 @@
                     "format":"int32"
                 }
               }
-          },          
+          },
           "links": {
               "description": "Links to other resources associated with this officer list item.",
               "type": "object",
@@ -1959,7 +1956,7 @@
                       "type": "string"
                   }
               }
-          },                
+          },
           "name_elements": {
               "description": "A document encapsulating the separate elements of a natural officer's name.",
               "type": "object",
@@ -2186,7 +2183,7 @@
               }
           }
       }
-    }      
+    }
   },
   "parameters":  {
     "QueryString":{
@@ -2219,7 +2216,7 @@
       "description" : "Start index for the results"
     },
     "CompanyNumber":{
-      "name": "companynumber",            
+      "name": "companynumber",
       "in": "path",
       "description": "The company number of the basic information to return.",
       "x-ms-summary": "Company Number",
@@ -2262,7 +2259,7 @@
           "surname"
       ]
     },
-    "OfficerId":{      
+    "OfficerId":{
       "name": "officer_id",
       "in": "path",
       "description": "The officer id of the appointment list being requested.",
@@ -2270,7 +2267,7 @@
       "type": "string",
       "x-ms-summary": "Officer ID",
       "x-ms-url-encoding":"single"
-    }    
+    }
   },
   "responses": {},
   "securityDefinitions": {
